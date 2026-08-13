@@ -58,7 +58,14 @@ pub fn append_session(session: &Session) {
 
     if write_header {
         writer
-            .write_record(["start", "end", "duration_minutes", "project", "tag"])
+            .write_record([
+                "start",
+                "end",
+                "duration_minutes",
+                "duration_hours",
+                "project",
+                "tag",
+            ])
             .expect("failed to write header");
     }
 

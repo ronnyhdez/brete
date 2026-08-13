@@ -49,11 +49,13 @@ pub fn stop() {
 
     let end = Local::now();
     let duration_minutes = (end - current.start).num_minutes();
+    let duration_hours = (duration_minutes as f64 / 60.0 * 100.0).round() / 100.0;
 
     let session = Session {
         start: current.start,
         end,
         duration_minutes,
+        duration_hours,
         project: current.project,
         tag: current.tag,
     };
@@ -93,18 +95,47 @@ pub fn log() {
 
     sessions.sort_by(|a, b| b.start.cmp(&a.start));
 
-    println!(
-        "{:<12} {:<8} {:<8} {:<20} {:<20}",
-        "PROJECT", "TAG", "DURATION", "START", "END"
-    );
-    for s in sessions {
-        println!(
-            "{:<12} {:<8} {:<8} {:<20} {:<20}",
-            s.project,
-            s.tag,
-            format_duration(s.duration_minutes),
-            s.start.format("%Y-%m-%d %H:%M"),
-            s.end.format("%Y-%m-%d %H:%M"),
-        );
+    let header = ["PROJECT", "TAG", "DURATION", "HOURS", "START", "END"]
+        .map(String::from);
+    let rows: Vec<[String; 6]> = sessions
+        .iter()
+        .map(|s| {
+            [
+                s.project.clone(),
+                s.tag.clone(),
+                format_duration(s.duration_minutes),
+                format!("{:.2}", s.duration_hours),
+                s.start.format("%Y-%m-%d %H:%M").to_string(),
+                s.end.format("%Y-%m-%d %H:%M").to_string(),
+            ]
+        })
+        .collect();
+
+    let mut widths = header.each_ref().map(|h| h.len());
+    for row in &rows {
+        for (w, cell) in widths.iter_mut().zip(row.iter()) {
+            *w = (*w).max(cell.len());
+        }
     }
+
+    print_row(&header, &widths);
+    for row in &rows {
+        print_row(row, &widths);
+    }
+}
+
+fn print_row(cells: &[String; 6], widths: &[usize; 6]) {
+    let line: Vec<String> = cells
+        .iter()
+        .zip(widths.iter())
+        .enumerate()
+        .map(|(i, (cell, width))| {
+            if i == cells.len() - 1 {
+                cell.clone()
+            } else {
+                format!("{:<width$}", cell, width = width)
+            }
+        })
+        .collect();
+    println!("{}", line.join("  "));
 }
