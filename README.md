@@ -1,4 +1,4 @@
-# brete_logger
+# brete
 
 CLI to log project working hours
 
