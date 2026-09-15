@@ -11,12 +11,20 @@ Requires [Rust/Cargo](https://rustup.rs/).
 ```sh
 git clone <this-repo-url> brete_logger
 cd brete_logger
-cargo build --release
 ```
 
-Copy the binary onto your `PATH` (requires sudo since `/usr/local/bin` is root-owned):
+If `~/.cargo/bin` is already on your `PATH` (the default after installing Rust via [rustup](https://rustup.rs/)), the easiest way to install is:
 
 ```sh
+cargo install --path .
+```
+
+This builds in release mode and drops the binary straight into `~/.cargo/bin` — no `sudo` needed.
+
+Otherwise, build manually and copy the binary onto your `PATH` (requires sudo since `/usr/local/bin` is root-owned):
+
+```sh
+cargo build --release
 sudo cp target/release/brete /usr/local/bin/brete
 sudo chmod 755 /usr/local/bin/brete
 ```
