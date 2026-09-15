@@ -63,6 +63,7 @@ pub fn append_session(session: &Session) {
                 "end",
                 "duration_minutes",
                 "duration_hours",
+                "week",
                 "project",
                 "tag",
             ])

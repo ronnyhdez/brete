@@ -14,6 +14,7 @@ pub struct Session {
     pub end: DateTime<Local>,
     pub duration_minutes: i64,
     pub duration_hours: f64,
+    pub week: u32,
     pub project: String,
     pub tag: String,
 }

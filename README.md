@@ -75,10 +75,10 @@ This appends the completed session to the log and clears the running timer.
 brete log
 ```
 
-Prints all recorded sessions (most recent first) as a table: project, tag, duration, start, and end time.
+Prints all recorded sessions (most recent first) as a table: project, tag, duration, hours, week, start, and end time.
 
 ## Data storage
 
-Sessions are stored as plain CSV in `~/.brete/log.csv`, one row per completed session (`start,end,duration_minutes,project,tag`). It's human-readable and safe to open directly, back up, or import into a spreadsheet.
+Sessions are stored as plain CSV in `~/.brete/log.csv`, one row per completed session (`start,end,duration_minutes,duration_hours,week,project,tag`). `week` is the ISO week number of the session's start date. It's human-readable and safe to open directly, back up, or import into a spreadsheet.
 
 The currently running timer (if any) is kept in `~/.brete/current.json` and removed once you run `brete stop`.
