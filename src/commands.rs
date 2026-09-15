@@ -1,4 +1,4 @@
-use chrono::Local;
+use chrono::{Datelike, Local};
 
 use crate::model::{CurrentSession, Session};
 use crate::storage;
@@ -51,11 +51,14 @@ pub fn stop() {
     let duration_minutes = (end - current.start).num_minutes();
     let duration_hours = (duration_minutes as f64 / 60.0 * 100.0).round() / 100.0;
 
+    let week = current.start.iso_week().week();
+
     let session = Session {
         start: current.start,
         end,
         duration_minutes,
         duration_hours,
+        week,
         project: current.project,
         tag: current.tag,
     };
@@ -95,9 +98,9 @@ pub fn log() {
 
     sessions.sort_by(|a, b| b.start.cmp(&a.start));
 
-    let header = ["PROJECT", "TAG", "DURATION", "HOURS", "START", "END"]
+    let header = ["PROJECT", "TAG", "DURATION", "HOURS", "WEEK", "START", "END"]
         .map(String::from);
-    let rows: Vec<[String; 6]> = sessions
+    let rows: Vec<[String; 7]> = sessions
         .iter()
         .map(|s| {
             [
@@ -105,6 +108,7 @@ pub fn log() {
                 s.tag.clone(),
                 format_duration(s.duration_minutes),
                 format!("{:.2}", s.duration_hours),
+                s.week.to_string(),
                 s.start.format("%Y-%m-%d %H:%M").to_string(),
                 s.end.format("%Y-%m-%d %H:%M").to_string(),
             ]
@@ -124,7 +128,7 @@ pub fn log() {
     }
 }
 
-fn print_row(cells: &[String; 6], widths: &[usize; 6]) {
+fn print_row(cells: &[String; 7], widths: &[usize; 7]) {
     let line: Vec<String> = cells
         .iter()
         .zip(widths.iter())
